@@ -1,11 +1,17 @@
 def variable_seperator(input):
-	operator = ["+","-", "*", "/", "%"]
-	for i in range(0, len(input)-1):
-		if input[i] in operator:
-			var1 = input[5:i-1]
-			var2 = input[i+2:len(input)-1]
-	return var1, var2
+	operator = ["+","-", "*", "/", "%", "<<"]
+	myList = input.split(" ")
+	opration = False
 
-
-l=" a = b + c "
-variable_seperator(l)
+	for char in myList:
+		if char in operator:
+			var1 = myList[myList.index(char) - 1]
+			var2 = myList[myList.index(char) + 1]
+			opration = True
+	
+	if opration:
+		print var1, var2
+		return var1, var2
+	else:
+		print myList[myList.index("=") + 1]
+		return myList[myList.index("=") + 1]
