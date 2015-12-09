@@ -1,8 +1,7 @@
 z = 1
 y = 2
-c = z + y
-g = z + y
-a = z * c
-e = a + y
+c = 1 + 2
+a = 1 * c
+e = a + 2
 b = 4
-f = b + e
+f = 4 + e

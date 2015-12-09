@@ -16,6 +16,21 @@ class compiler:
 		self.findRoot()
 		self.populate(self.root)
 
+		self.optimize()
+		self.write()
+
+	def optimize(self):
+		preList = []
+		preList = self.code_array
+
+		self.common_subexpression_elimination()
+		self.copy_propagation()
+		self.dead_code_elimination()
+
+		if preList != self.code_array:
+			self.optimize()
+		else: return
+
 	def write(self):
 		wfile = open(  "%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
@@ -108,13 +123,13 @@ class compiler:
 
 def main():
 	c = compiler("test.txt")
-	print c.code_array
+	# print c.code_array
 	c.common_subexpression_elimination()
-	print c.code_array
+	# print c.code_array
 	c.copy_propagation()
-	print c.code_array
+	# print c.code_array
 	c.dead_code_elimination()
-	print c.code_array
+	# print c.code_array
 
 if __name__ == "__main__":
     main()
