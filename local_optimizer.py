@@ -57,6 +57,8 @@ class compiler:
 				temp = lhs[0]
 				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(self.code_array[self.code_array.index(statement) + 1:], temp, rhs[1])
 
+	
+
 	def search_and_replace(self, myList, old, new):
 		for statement in myList:
 			myList[myList.index(statement)] = statement.replace(old, new)
@@ -64,6 +66,22 @@ class compiler:
 
 	def replace_rhs(self, indexList1, indexList2, indexString1, indexString2, myList):
 		myList[indexList2] = myList[indexList2][:indexString2 + 2] + myList[indexString1][:indexString1 - 1]
+
+	def variable_seperator(self, input):
+		operator = ["+","-", "*", "/", "%", "<<"]
+		myList = input.split(" ")
+		opration = False
+
+		for char in myList:
+			if char in operator:
+				var1 = myList[myList.index(char) - 1]
+				var2 = myList[myList.index(char) + 1]
+				opration = True
+		
+		if opration:
+			return var1, var2
+		else:
+			return myList[myList.index("=") + 1]
 
 def main():
 	c = compiler("test.txt")
