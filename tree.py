@@ -11,6 +11,10 @@ class Tree(object):
     		return False
     	return self.left.findLeave(leave) or self.right.findLeave(leave)
 
+    def grow(self, left, right):
+    	self.left = Tree(left)
+    	self.right = Tree(right)
+
 
 def main():
 	root = Tree("a")

@@ -5,4 +5,4 @@ g = a + b
 a = a * c
 e = a + b
 b = 4
-f = b * 4
+f = b + e

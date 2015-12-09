@@ -4,12 +4,17 @@ import tree
 
 class compiler:
 	def __init__ (self, c_file):
+
 		self.file_name = c_file
 		rfile = open(self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
 		self.code_array = self.code_orig.split("\n")
-		self.write()
+
+		self.single_assignment()
+		self.create_lib()
+		self.findRoot()
+		self.populate(self.root)
 
 	def write(self):
 		wfile = open(  "%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
@@ -17,6 +22,21 @@ class compiler:
 			wfile.write(l)
 			wfile.write("\n")
 		wfile.close()
+
+	def findRoot(self):
+		self.root = tree.Tree(self.code_array[-1][0])
+
+	def populate(self, root):
+		if root.data in self.lib:
+			root.grow(*self.variable_seperator(self.lib[root.data]))
+			self.populate(root.left)
+			self.populate(root.right)
+		else: return
+
+	def create_lib(self):
+		self.lib = {}
+		for statement in self.code_array:
+			self.lib[statement[0]] = statement
 
 	def single_assignment(self):
 		hashtable = {}
@@ -57,7 +77,10 @@ class compiler:
 				temp = lhs[0]
 				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(self.code_array[self.code_array.index(statement) + 1:], temp, rhs[1])
 
-	
+	def dead_code_elimination(self):
+		for statement in self.code_array:
+			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
+
 
 	def search_and_replace(self, myList, old, new):
 		for statement in myList:
@@ -81,13 +104,16 @@ class compiler:
 		if opration:
 			return var1, var2
 		else:
-			return myList[myList.index("=") + 1]
+			return myList[myList.index("=") + 1], None
 
 def main():
 	c = compiler("test.txt")
-	c.single_assignment()
+	print c.code_array
 	c.common_subexpression_elimination()
+	print c.code_array
 	c.copy_propagation()
+	print c.code_array
+	c.dead_code_elimination()
 	print c.code_array
 
 if __name__ == "__main__":
