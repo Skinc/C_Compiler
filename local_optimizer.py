@@ -12,17 +12,13 @@ class compiler:
 		self.code_array = self.code_orig.split("\n")
 
 		self.single_assignment()
-		self.create_lib()
 		self.findRoot()
-		self.populate(self.root)
 
 		self.optimize()
 		self.write()
 
 	def optimize(self):
-		preList = []
-		preList = self.code_array
-
+		preList = self.code_array[:]
 		self.common_subexpression_elimination()
 		self.copy_propagation()
 		self.dead_code_elimination()
@@ -93,6 +89,8 @@ class compiler:
 				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(self.code_array[self.code_array.index(statement) + 1:], temp, rhs[1])
 
 	def dead_code_elimination(self):
+		self.create_lib()
+		self.populate(self.root)
 		for statement in self.code_array:
 			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
 
@@ -123,13 +121,6 @@ class compiler:
 
 def main():
 	c = compiler("test.txt")
-	# print c.code_array
-	c.common_subexpression_elimination()
-	# print c.code_array
-	c.copy_propagation()
-	# print c.code_array
-	c.dead_code_elimination()
-	# print c.code_array
 
 if __name__ == "__main__":
     main()
