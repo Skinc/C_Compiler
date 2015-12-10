@@ -3,14 +3,21 @@ import string
 import tree
 
 class compiler:
+	
 	def __init__ (self, c_file):
+
+		# used for constant folding, feel free to move
+		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y) }
 
 		self.file_name = c_file
 		rfile = open(self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
 		self.code_array = self.code_orig.split("\n")
-
+		print self.code_array
+		self.constant_fold()
+		print self.code_array
+		
 		self.single_assignment()
 		self.findRoot()
 
@@ -53,23 +60,24 @@ class compiler:
 		hashtable = {}
 		variable = list(string.ascii_lowercase)
 		variable_index = 25
-
+		print self.code_array
 		for statement in self.code_array:
-			if statement[0] not in hashtable:
-				hashtable[statement[0]] = 1
-			else:
-				j=0
-				hashtable[statement[0]] += 1
-				temp = statement[0]
-				l=[]
+			if statement is not "":
+				if statement[0] not in hashtable:
+					hashtable[statement[0]] = 1
+				else:
+					j=0
+					hashtable[statement[0]] += 1
+					temp = statement[0]
+					l=[]
 
-				index = self.code_array.index(statement)
-				while j <= index:
-				 	self.code_array[j] = self.code_array[j].replace(statement[0], variable[variable_index])
-				 	j += 1
+					index = self.code_array.index(statement)
+					while j <= index:
+					 	self.code_array[j] = self.code_array[j].replace(statement[0], variable[variable_index])
+					 	j += 1
 
-				variable_index = variable_index-1
-				self.code_array[index] = temp + self.code_array[index][1:]
+					variable_index = variable_index-1
+					self.code_array[index] = temp + self.code_array[index][1:]
 
 	def common_subexpression_elimination(self):
 		rhsList = []
@@ -94,24 +102,24 @@ class compiler:
 		for statement in self.code_array:
 			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
 
-	def constant_fold(self, myList):
-	outputs = []
-	for l in myList:
-		out = l
-		if ( ("="  in l) and not ("=="  in l)):
-			line = l.split("=")
-			LHS = line[0] + "="
-			RHS = line[1]
-			inputs = re.split("[/+*\-%]+", RHS)
-			if (len(inputs) is 2):
-				input1 = inputs[0].replace(" ", "")
-				input2 =inputs[1].replace(" ", "")
-				if (input1.isdigit() and  input2.isdigit()):
-				 	newValue = ops[RHS[len(inputs[0])]] (float(input1), float(input2))
-					out = LHS + str(int(newValue) if newValue.is_integer() else newValue)
+	def constant_fold(self):
+		outputs = []
+		for l in self.code_array:
+			out = l
+			if ( ("="  in l) and not ("=="  in l)):
+				line = l.split("=")
+				LHS = line[0] + "="
+				RHS = line[1]
+				inputs = re.split("[/+*\-%]+", RHS)
+				if (len(inputs) is 2):
+					input1 = inputs[0].replace(" ", "")
+					input2 =inputs[1].replace(" ", "")
+					if (input1.isdigit() and  input2.isdigit()):
+					 	newValue = self.ops[RHS[len(inputs[0])]] (float(input1), float(input2))
+						out = LHS + str(int(newValue) if newValue.is_integer() else newValue)
 
-		outputs.append(out)
-	return outputs
+			outputs.append(out)
+		self.code_array = outputs
 
 	def search_and_replace(self, myList, old, new):
 		for statement in myList:
