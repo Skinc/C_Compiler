@@ -14,9 +14,7 @@ class compiler:
 		self.code_orig = rfile.read()
 		rfile.close()
 		self.code_array = self.code_orig.split("\n")
-		print self.code_array
 		self.constant_fold()
-		print self.code_array
 		
 		self.single_assignment()
 		self.findRoot()
@@ -28,8 +26,8 @@ class compiler:
 		preList = self.code_array[:]
 		self.common_subexpression_elimination()
 		self.copy_propagation()
+		self.constant_fold()
 		self.dead_code_elimination()
-
 		if preList != self.code_array:
 			self.optimize()
 		else: return
@@ -47,6 +45,7 @@ class compiler:
 	def populate(self, root):
 		if root.data in self.lib:
 			root.grow(*self.variable_seperator(self.lib[root.data]))
+			self.lib.pop(root.data)
 			self.populate(root.left)
 			self.populate(root.right)
 		else: return
@@ -60,7 +59,6 @@ class compiler:
 		hashtable = {}
 		variable = list(string.ascii_lowercase)
 		variable_index = 25
-		print self.code_array
 		for statement in self.code_array:
 			if statement is not "":
 				if statement[0] not in hashtable:
@@ -90,9 +88,10 @@ class compiler:
 
 	def copy_propagation(self):
 		for statement in self.code_array:
+			myList = statement.split(" ")
 			lhs = statement[:statement.index('=')]
 			rhs = statement[statement.index('=') + 1:]
-			if len(rhs) == 2:
+			if len(myList) == 3:
 				temp = lhs[0]
 				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(self.code_array[self.code_array.index(statement) + 1:], temp, rhs[1])
 
@@ -108,7 +107,7 @@ class compiler:
 			out = l
 			if ( ("="  in l) and not ("=="  in l)):
 				line = l.split("=")
-				LHS = line[0] + "="
+				LHS = line[0] + "= "
 				RHS = line[1]
 				inputs = re.split("[/+*\-%]+", RHS)
 				if (len(inputs) is 2):
@@ -127,7 +126,7 @@ class compiler:
 		return myList
 
 	def replace_rhs(self, indexList1, indexList2, indexString1, indexString2, myList):
-		myList[indexList2] = myList[indexList2][:indexString2 + 2] + myList[indexString1][:indexString1 - 1]
+		myList[indexList2] = myList[indexList2][:indexString2 + 2] + myList[indexList1][:indexString1 - 1]
 
 	def variable_seperator(self, input):
 		operator = ["+","-", "*", "/", "%", "<<"]
