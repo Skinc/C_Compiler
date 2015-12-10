@@ -13,7 +13,8 @@ class compiler:
 		rfile = open(self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
-		self.code_array = self.code_orig.split("\n")
+
+		self.code_array = self.filter(self.code_orig.split("\n"))
 		self.constant_fold()
 		
 		self.single_assignment()
@@ -21,6 +22,14 @@ class compiler:
 
 		self.optimize()
 		self.write()
+
+	def filter(self, array):
+		offset = 0
+		for i in range(len(array)):
+			if (len(array[i+offset]) is 0) or array[i+offset].isspace():
+				del array[i+offset]
+				offset-= 1
+		return array
 
 	def optimize(self):
 		preList = self.code_array[:]
