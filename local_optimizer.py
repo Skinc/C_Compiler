@@ -94,6 +94,24 @@ class compiler:
 		for statement in self.code_array:
 			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
 
+	def constant_fold(self, myList):
+	outputs = []
+	for l in myList:
+		out = l
+		if ( ("="  in l) and not ("=="  in l)):
+			line = l.split("=")
+			LHS = line[0] + "="
+			RHS = line[1]
+			inputs = re.split("[/+*\-%]+", RHS)
+			if (len(inputs) is 2):
+				input1 = inputs[0].replace(" ", "")
+				input2 =inputs[1].replace(" ", "")
+				if (input1.isdigit() and  input2.isdigit()):
+				 	newValue = ops[RHS[len(inputs[0])]] (float(input1), float(input2))
+					out = LHS + str(int(newValue) if newValue.is_integer() else newValue)
+
+		outputs.append(out)
+	return outputs
 
 	def search_and_replace(self, myList, old, new):
 		for statement in myList:
