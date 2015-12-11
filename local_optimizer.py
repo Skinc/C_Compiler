@@ -8,7 +8,7 @@ class compiler:
 	def __init__ (self, c_file):
 
 		# used for constant folding, feel free to move
-		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y) }
+		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y), "<": (lambda x,y: x*(2**y)), ">": (lambda x,y: x*(2**(y*-1))) }
 
 		self.file_name = c_file
 		rfile = open(self.file_name, "r")
@@ -16,8 +16,9 @@ class compiler:
 		rfile.close()
 
 		self.code_array = self.filter(self.code_orig.split("\n"))
+		print self.code_array
 		self.constant_fold()
-		
+		print self.code_array
 		self.single_assignment()
 		self.findRoot()
 
@@ -140,7 +141,8 @@ class compiler:
 				line = l.split("=")
 				LHS = line[0] + "= "
 				RHS = line[1]
-				inputs = re.split("[/+*\-%]+", RHS)
+				inputs = re.split("<<|>>|[/+\*\-%]+", RHS)
+				# print inputs
 				if (len(inputs) is 2):
 					input1 = inputs[0].replace(" ", "")
 					input2 =inputs[1].replace(" ", "")
