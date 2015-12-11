@@ -5,7 +5,9 @@ i = i
 c = a + b
 g = a + b
 a = a * c
+
 e = a + b
+<<<<<<< Updated upstream
 b = 5
 f = b + e
 g = f * b
@@ -13,3 +15,7 @@ g = g + 28
 
 h = i * g
 j = h * b
+
+k = 2<<2
+l = 8>>2
+m = 2 * 6
