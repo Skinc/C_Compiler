@@ -1,8 +1,15 @@
-a = 1
-b = 2
+a = 3
+b = 7
+i = i
+
 c = a + b
 g = a + b
 a = a * c
 e = a + b
-b = 4
+b = 5
 f = b + e
+g = f * b
+g = g + 28
+
+h = i * g
+j = h * b
