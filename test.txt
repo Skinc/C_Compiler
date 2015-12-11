@@ -7,7 +7,6 @@ g = a + b
 a = a * c
 
 e = a + b
-<<<<<<< Updated upstream
 b = 5
 f = b + e
 g = f * b
