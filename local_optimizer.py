@@ -12,7 +12,7 @@ class compiler:
 		self.verbose = debug
 
 		self.file_name = c_file
-		rfile = open(self.file_name, "r")
+		rfile = open("./test/" + self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
 
@@ -64,7 +64,7 @@ class compiler:
 		else: return
 
 	def write(self):
-		wfile = open(  "%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
+		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
 			wfile.write(l)
 			wfile.write("\n")
@@ -290,6 +290,7 @@ def test():
 def main():
 	test()
 	# c = compiler("float.txt")
+	c = compiler("Heron.txt")
 
 if __name__ == "__main__":
     

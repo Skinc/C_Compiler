@@ -1,0 +1,13 @@
+a = i
+b = j
+
+c = a - b
+d = a + b
+
+a = a * a
+b = b * b
+
+e = a + b
+
+f = c * d
+f = f * e
