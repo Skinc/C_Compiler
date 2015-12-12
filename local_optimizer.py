@@ -71,11 +71,7 @@ class compiler:
 	def write(self):
 		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
-<<<<<<< Updated upstream
 			wfile.write(l + ";")
-=======
-			wfile.write(l+";")
->>>>>>> Stashed changes
 			wfile.write("\n")
 		wfile.close()
 
