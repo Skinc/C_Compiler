@@ -16,7 +16,7 @@ class compiler:
 		self.code_orig = rfile.read()
 		rfile.close()
 
-		self.code_array = self.filter(self.code_orig.split("\n"))
+		self.code_array = self.filter(self.code_orig.split(";\n"))
 		
 		self.single_assignment()
 		self.findRoot()
