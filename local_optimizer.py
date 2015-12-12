@@ -243,7 +243,7 @@ class compiler:
 		return ((num & (num - 1)) == 0) and num != 0
 
 def main():
-	c = compiler("test.txt")
+	c = compiler("DCEtest.txt")
 
 if __name__ == "__main__":
     main()
