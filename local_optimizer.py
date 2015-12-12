@@ -5,10 +5,11 @@ import tree
 
 class compiler:
 	
-	def __init__ (self, c_file):
+	def __init__ (self, c_file, debug = False):
 
 		# used for constant folding, feel free to move
 		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y), "<": (lambda x,y: x*(2**y)), ">": (lambda x,y: x*(2**(y*-1))) }
+		self.verbose = debug
 
 		self.file_name = c_file
 		rfile = open("./test/" + self.file_name, "r")
@@ -16,15 +17,13 @@ class compiler:
 		rfile.close()
 
 		self.code_array = self.filter(self.code_orig.split("\n"))
-		print self.code_array
-		self.constant_fold()
-		print self.code_array
+		
 		self.single_assignment()
 		self.findRoot()
 
 		self.optimize()
 		self.write()
-
+		
 	def filter(self, array):
 		offset = 0
 		for i in range(len(array)):
@@ -36,24 +35,29 @@ class compiler:
 	def optimize(self):
 		preList = self.code_array[:]
 		self.common_subexpression_elimination()
-		print "CSE"
-		print self.code_array
+		if self.verbose:
+			print "CSE"
+			print self.code_array
 
 		self.copy_propagation()
-		print "CP"
-		print self.code_array
+		if self.verbose:
+			print "CP"
+			print self.code_array
 
 		self.constant_fold()
-		print "CF"
-		print self.code_array
+		if self.verbose:
+			print "CF"
+			print self.code_array
 
 		self.algebraic_simplification()
-		print "AS"
-		print self.code_array
+		if self.verbose:
+			print "AS"
+			print self.code_array
 
 		self.dead_code_elimination()
-		print "DCE"
-		print self.code_array
+		if self.verbose:
+			print "DCE"
+			print self.code_array
 
 		if preList != self.code_array:
 			self.optimize()
@@ -146,12 +150,22 @@ class compiler:
 				if (len(inputs) is 2):
 					input1 = inputs[0].replace(" ", "")
 					input2 =inputs[1].replace(" ", "")
-					if (input1.isdigit() and  input2.isdigit()):
-					 	newValue = self.ops[RHS[len(inputs[0])]] (float(input1), float(input2))
+					if (self.isnum(input1) and  self.isnum(input2)):
+						newValue = self.ops[RHS[len(inputs[0])]] (float(input1), float(input2))
 						out = LHS + str(int(newValue) if newValue.is_integer() else newValue)
 
 			outputs.append(out)
 		self.code_array = outputs
+
+	def isnum(self, n):
+		if n.isdigit():
+			return True
+		try:
+			float(n)
+			return True
+		except ValueError:
+			return False
+
 
 	def algebraic_simplification(self):
 		for statement in self.code_array:
@@ -242,8 +256,42 @@ class compiler:
 		num = int(num)
 		return ((num & (num - 1)) == 0) and num != 0
 
+	def test(self):
+
+		genfile = open(self.file_name.split(".")[0] + "_optimized.c", "r")
+		generated_code = genfile.read()
+		genfile.close()
+		expfile = open("expected_"+self.file_name, "r")
+		expected_code = expfile.read()
+		expfile.close()
+		print generated_code
+		print expected_code
+		for i in range(len(expected_code)):
+			print expected_code[i] + " " + generated_code[i]
+		if generated_code is expected_code:
+			return True
+		return False
+
+
+def test():
+	# should be 66.6
+	tests =  ["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
+	for test in tests:
+		c = compiler(test)
+		split = test.split(".")[0].split("_")
+		if c.test():
+			print split[1] + " " + split[2] + " Passed"
+		else: 
+			print split[1] + " " + split[2] + " Failed"
+
+	c = compiler("test_algebraic_simplification.txt")
+
+
 def main():
+	test()
+	# c = compiler("float.txt")
 	c = compiler("Heron.txt")
 
 if __name__ == "__main__":
+    
     main()
