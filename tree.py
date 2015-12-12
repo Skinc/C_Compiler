@@ -15,20 +15,3 @@ class Tree(object):
     	self.left = Tree(left)
     	self.right = Tree(right)
 
-
-def main():
-	root = Tree("a")
-	root.left = Tree("b")
-	root.right = Tree("c")
-
-	root.left.left = Tree("d")
-	root.left.right = Tree("e")
-
-	root.right.left = Tree("f")
-	root.right.right = Tree("g")
-
-	print root.findLeave("e")
-	print root.findLeave("h")
-
-if __name__ == "__main__":
-    main()
