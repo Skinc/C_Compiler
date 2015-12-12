@@ -16,13 +16,18 @@ class compiler:
 		self.code_orig = rfile.read()
 		rfile.close()
 
-		self.code_array = self.filter(self.code_orig.split(";\n"))
+		self.code_array = self.filter(self.code_orig.split("\n"))
+		self.semicolonProcessing()
 		
 		self.single_assignment()
 		self.findRoot()
 
 		self.optimize()
 		self.write()
+
+	def semicolonProcessing(self):
+		for statement in self.code_array:
+			self.code_array[self.code_array.index(statement)] = statement[:-1]
 		
 	def filter(self, array):
 		offset = 0
