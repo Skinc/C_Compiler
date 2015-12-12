@@ -291,13 +291,9 @@ def test():
 
 
 def main():
-<<<<<<< HEAD
 	c = compiler("AStestII.txt")
-=======
 	test()
-	# c = compiler("float.txt")
-	c = compiler("Heron.txt")
->>>>>>> bac9e3c6f80287fdd5b89c071ddd98210d40301e
+
 
 if __name__ == "__main__":
     
