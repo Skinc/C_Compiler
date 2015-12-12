@@ -2,11 +2,25 @@
 void wrapper_function() {
 	int a, b, c, d, e, f, g, h, i, j, k, l, 
 		m, n, o, p, q, r, s, t, u, v, w, x, y, z;
+	a = i;
+	b = j;
+	c = k;
 
+	a = a * b;
+	a = a / c;
+
+	a = a * b;
+	a = a / c;
+
+	a = a * b;
+	a = a / c;
+
+	a = a * b;
+	a = a / c;
 }
 #define testCount 10
 int main () {
-	double times
+	double times;
 	for (int i = 0; i < testCount; i++){
 
 		clock_t begin, end;
