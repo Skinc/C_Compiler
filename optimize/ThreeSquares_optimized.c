@@ -1,5 +1,5 @@
-a = i * i
-b = j * j
-c = k * k
-d = a + b
-e = d + c
+a = i * i;
+b = j * j;
+c = k * k;
+d = a + b;
+e = d + c;

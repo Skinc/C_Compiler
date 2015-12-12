@@ -281,22 +281,21 @@ class compiler:
 		return False
 
 
-# def test():
-# 	# should be 66.6
-# 	tests =  ["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
-# 	for test in tests:
-# 		c = compiler(test)
-# 		split = test.split(".")[0].split("_")
-# 		if c.test():
-# 			print split[1] + " " + split[2] + " Passed"
-# 		else: 
-# 			print split[1] + " " + split[2] + " Failed"
+def test():
+	tests =  ["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
+	for test in tests:
+		c = compiler(test)
+		split = test.split(".")[0].split("_")
+		if c.test():
+			print split[1] + " " + split[2] + " Passed"
+		else: 
+			print split[1] + " " + split[2] + " Failed"
 
-# 	c = compiler("test_algebraic_simplification.txt")
+	c = compiler("test_algebraic_simplification.txt")
 
 
 def main():
-	c = compiler("MultiplyAndDivide.txt")
+	c = compiler("ThreeSquares.txt")
 
 
 if __name__ == "__main__":
