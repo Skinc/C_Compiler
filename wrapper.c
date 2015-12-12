@@ -31,6 +31,7 @@ int wrapper_function() {
 	return a;
 }
 
+
 int main () {
 	clock_t begin, end;
 	double time_spent, times;
@@ -44,7 +45,7 @@ int main () {
 	  	for (j = 0; j < loopCount; j++) {
 	  		result = wrapper_function();
 	  	}
-		
+
 		end = clock();
 	  	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   		times = times + time_spent;

@@ -71,7 +71,11 @@ class compiler:
 	def write(self):
 		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
+<<<<<<< Updated upstream
 			wfile.write(l + ";")
+=======
+			wfile.write(l+";")
+>>>>>>> Stashed changes
 			wfile.write("\n")
 		wfile.close()
 
@@ -266,32 +270,33 @@ class compiler:
 
 	def test(self):
 
-		genfile = open(self.file_name.split(".")[0] + "_optimized.c", "r")
-		generated_code = genfile.read()
+		genfile = open("./optimize/"+self.file_name.split(".")[0] + "_optimized.c", "r")
+		generated_code = genfile.read().replace(" ", "").replace("\n", "")
 		genfile.close()
-		expfile = open("expected_"+self.file_name, "r")
-		expected_code = expfile.read()
+		expfile = open("./expected/"+self.file_name.split(".")[0] + "_expected.c", "r")
+		expected_code = expfile.read().replace(" ", "").replace("\n", "")
 		expfile.close()
-		print generated_code
-		print expected_code
-		for i in range(len(expected_code)):
-			print expected_code[i] + " " + generated_code[i]
-		if generated_code is expected_code:
+
+
+		if generated_code == expected_code:
 			return True
 		return False
 
 
 def test():
-	tests =  ["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
+
+	# should be 66.6
+	tests =  ["AStest.txt", "CPtest.txt", "CSEtest.txt", "DCEtest.txt", "DiffOfFourth.txt", "Heron.txt", "LawOfCosines.txt", "MultiplyAndDivide.txt", "SAFtest.txt", "ThreeSquares.txt" ]#["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
 	for test in tests:
 		c = compiler(test)
-		split = test.split(".")[0].split("_")
+		testName = test.split(".")[0]
+		
 		if c.test():
-			print split[1] + " " + split[2] + " Passed"
+			print testName + " Passed"
 		else: 
-			print split[1] + " " + split[2] + " Failed"
+			print testName  + " Failed"
 
-	c = compiler("test_algebraic_simplification.txt")
+	# c = compiler("test_algebraic_simplification.txt")
 
 
 def main():
