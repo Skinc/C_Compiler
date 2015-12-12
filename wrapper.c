@@ -8,27 +8,17 @@ int wrapper_function() {
 	int a, b, c, d, e, f, g, h, i, j, k, l, 
 		m, n, o, p, q, r, s, t, u, v, w, x, y, z;
 
-	i = 3;
+	i = 5;
 	j = 4;
-	k = 5;
+	k = 8;
 
-	a = i;
-	b = j;
-	c = k;
+	a = i * i;
+	b = j * j;
+	c = k * k;
+	d = a + b;
+	e = d + c;
 
-	a = a * b;
-	a = a / c;
-
-	a = a * b;
-	a = a / c;
-
-	a = a * b;
-	a = a / c;
-
-	a = a * b;
-	a = a / c;
-
-	return a;
+	return e;
 }
 
 int main () {
@@ -49,7 +39,7 @@ int main () {
 	  	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   		times = times + time_spent;
   	}
-  	printf("Average time spent: %f\n", time_spent );
+  	printf("Average time spent: %f\n", times/testCount );
   		
 	return result;
 }
