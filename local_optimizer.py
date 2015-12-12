@@ -66,7 +66,7 @@ class compiler:
 	def write(self):
 		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
-			wfile.write(l)
+			wfile.write(l + ";")
 			wfile.write("\n")
 		wfile.close()
 
@@ -187,6 +187,9 @@ class compiler:
 			if var[2] == '0':
 				rhs = " " + var[1]
 				other = False
+			if var[0] == "*":
+				rhs = " 0"
+				other = False
 
 		elif var[0] == "*":
 			if var[1].isdigit():
@@ -288,8 +291,18 @@ class compiler:
 
 
 def main():
+<<<<<<< HEAD
 	# test()
 	c = compiler("MultiplyAndDivide.txt")
+=======
+<<<<<<< HEAD
+	c = compiler("AStestII.txt")
+=======
+	test()
+	# c = compiler("float.txt")
+	c = compiler("Heron.txt")
+>>>>>>> bac9e3c6f80287fdd5b89c071ddd98210d40301e
+>>>>>>> 9d3c6d4f0ebd37939da36fbcc78a3d8430f45243
 
 if __name__ == "__main__":
     
