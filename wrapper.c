@@ -6,14 +6,15 @@ void wrapper_function() {
 }
 #define testCount 10
 int main () {
-	double times
+	clock_t begin, end;
+	double time_spent, times;
 	for (int i = 0; i < testCount; i++){
 
-		clock_t begin, end;
-	  	double time_spent;
+
 	  	begin = clock();
 
 		wrapper_function();
+
 		end = clock();
 	  	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   		printf("Time spent: %f", time_spent );
