@@ -187,6 +187,9 @@ class compiler:
 			if var[2] == '0':
 				rhs = " " + var[1]
 				other = False
+			if var[0] == "*":
+				rhs = " 0"
+				other = False
 
 		elif var[0] == "*":
 			if var[1].isdigit():
@@ -288,9 +291,13 @@ def test():
 
 
 def main():
+<<<<<<< HEAD
+	c = compiler("AStestII.txt")
+=======
 	test()
 	# c = compiler("float.txt")
 	c = compiler("Heron.txt")
+>>>>>>> bac9e3c6f80287fdd5b89c071ddd98210d40301e
 
 if __name__ == "__main__":
     
