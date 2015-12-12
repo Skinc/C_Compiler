@@ -1,5 +1,5 @@
 int main () {
-	wrapper_function()
+	wrapper_function();
 	return 0;
 }
 
