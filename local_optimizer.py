@@ -291,18 +291,8 @@ class compiler:
 
 
 def main():
-<<<<<<< HEAD
-	# test()
 	c = compiler("MultiplyAndDivide.txt")
-=======
-<<<<<<< HEAD
-	c = compiler("AStestII.txt")
-=======
-	test()
-	# c = compiler("float.txt")
-	c = compiler("Heron.txt")
->>>>>>> bac9e3c6f80287fdd5b89c071ddd98210d40301e
->>>>>>> 9d3c6d4f0ebd37939da36fbcc78a3d8430f45243
+
 
 if __name__ == "__main__":
     
