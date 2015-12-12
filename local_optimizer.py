@@ -11,7 +11,7 @@ class compiler:
 		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y), "<": (lambda x,y: x*(2**y)), ">": (lambda x,y: x*(2**(y*-1))) }
 
 		self.file_name = c_file
-		rfile = open(self.file_name, "r")
+		rfile = open("./test/" + self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
 
@@ -60,7 +60,7 @@ class compiler:
 		else: return
 
 	def write(self):
-		wfile = open(  "%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
+		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
 			wfile.write(l)
 			wfile.write("\n")
@@ -243,7 +243,7 @@ class compiler:
 		return ((num & (num - 1)) == 0) and num != 0
 
 def main():
-	c = compiler("DCEtest.txt")
+	c = compiler("Heron.txt")
 
 if __name__ == "__main__":
     main()
