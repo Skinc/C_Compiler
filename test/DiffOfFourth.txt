@@ -1,13 +1,13 @@
-a = i
-b = j
+a = i;
+b = j;
 
-c = a - b
-d = a + b
+c = a - b;
+d = a + b;
 
-a = a * a
-b = b * b
+a = a * a;
+b = b * b;
 
-e = a + b
+e = a + b;
 
-f = c * d
-f = f * e
+f = c * d;
+f = f * e;

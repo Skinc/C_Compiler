@@ -1,10 +1,10 @@
-a = i
-b = j
-c = k
+a = i;
+b = j;
+c = k;
 
-a = a * a
-b = b * b
-c = c * c
+a = a * a;
+b = b * b;
+c = c * c;
 
-d = a + b
-e = d + c
+d = a + b;
+e = d + c;

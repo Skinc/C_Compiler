@@ -1,15 +1,15 @@
-a = i
-b = j
-c = k
+a = i;
+b = j;
+c = k;
 
-d = a + b
-d = d + c
-d = d / 2
+d = a + b;
+d = d + c;
+d = d / 2;
 
-a = d - a
-b = d - b
-c = d - c
+a = d - a;
+b = d - b;
+c = d - c;
 
-e = a * b
-f = c * d
-g = e * f
+e = a * b;
+f = c * d;
+g = e * f;
