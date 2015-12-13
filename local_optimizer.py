@@ -402,17 +402,36 @@ class optimizer:
 
 	"""
 
-	self.operation_simplification(var) 
+	self.operation_simplification(var) replaces
+	expensive algebraic operation with cheaper ones
+	according to certain roles.
+
+	roles are given below:
+
+	1. a = b *(or /) 1 		->	 a = b
+	2. a = b * 0 			->	 a = 0
+	3. a = b +(or -) 0 		->	 a = 0
+	4. a = b * 32(exp of 2) ->	 a = b << 5
+
+	all the roles above are also applied to
+	cases when variables switch places.
+
+	All other cases will be returned as they
+	are before to be handled by other optimizations
 
 	"""
 
 	def operation_simplification(self, var):
 		rhs = ""
-		other = True
+		other = True # indicates whether the statement falls to 
+		# any of the given cases
 
+		# return the original if it is job of constant folding
 		if var[1].isdigit() and var[2].isdigit():
 			return " " + var[1] + " " + var[0] + " " + var[2]
 
+		# if one of the oprands are '0', return the other variable
+		# if it is multiplication, return ' 0'
 		if var[1] == "0" or var[2] == "0":
 			if var[1] == "0":
 				rhs = " " + var[2]
@@ -424,12 +443,16 @@ class optimizer:
 				rhs = " 0"
 				other = False
 
+		# if the operation is multiplication, perform 2's exp checking
 		elif var[0] == "*":
+			# performs shift based on the position of constant variable
 			if var[1].isdigit():
 				if self.check_two_exp(var[1]):
 					num1 = int(var[1])
+					# if the number is 1, return the other variable
 					if num1 == 1:
 						rhs = " " + var[2]
+					# if not, do shift
 					else:
 						rhs = " " + var[2] + " << " + str(int(math.log(num1,2)))
 					other = False
@@ -441,25 +464,35 @@ class optimizer:
 					else:
 						rhs = " " + var[1] + " << " + str(int(math.log(num2,2)))
 					other = False
+
+		# if the left hand side does not belong to 
+		# any of the special cases, return the original statement
 		if other:
 			rhs = " " + var[1] + " " + var[0] + " " + var[2]
 		return rhs
 
 	"""
 
-	self.dead_code_elimination()
+	self.dead_code_elimination() removes
+	statements that is not depended by 
+	the final return statement. In other 
+	word, dead code will be removed to achieve
+	better cache efficiency
 
 	"""
 
 	def dead_code_elimination(self):
-		self.create_lib()
-		self.populate(self.root)
+		self.create_lib() # create a library for the code array
+		self.populate(self.root) # build the syntax tree based on the root
 		for statement in self.code_array:
+			# remove the statement if it is not a leave of the tree
 			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
 
 	"""
 
-	self.search_and_replace()
+	self.search_and_replace(myList, old, new)
+	replace all "old" with "new" in the given
+	list
 
 	"""
 
@@ -470,7 +503,11 @@ class optimizer:
 
 	"""
 
-	self.replace_rhs()
+	self.replace_rhs(indexList1, indexList2, 
+	indexString1, indexString2, myList) replace 
+	the right hand side of a given statement
+	with that of another given statement in the 
+	given list. 
 
 	"""
 
@@ -479,14 +516,19 @@ class optimizer:
 
 	"""
 
-	self.variable_seperator_tuple()
+	self.variable_seperator_tuple(input) takes a
+	statement and separates into components.
 
+	This method will return a two-element tuple
+	if the right hand side is an algebraic operation.
+
+	It will return a tuple with variable 1 and None otherwise.
 	"""
 
 	def variable_seperator_tuple(self, input):
-		operator = ["+","-", "*", "/", "%", "<<"]
-		myList = input.split(" ")
-		opration = False
+		operator = ["+","-", "*", "/", "%", "<<"] # includes all the valid operations
+		myList = input.split(" ") # separates into components
+		opration = False # boolean to decide the form of return tuple
 
 		for char in myList:
 			if char in operator:
@@ -494,10 +536,10 @@ class optimizer:
 				var2 = myList[myList.index(char) + 1]
 				opration = True
 		
-		if opration:
-			return var1, var2
+		if opration: 
+			return var1, var2 # returns the two oprands if algebraic operation is found
 		else:
-			return myList[myList.index("=") + 1], None
+			return myList[myList.index("=") + 1], None # returns variable 1 and None otherwise
 
 	"""
 
@@ -505,7 +547,8 @@ class optimizer:
 	statement and separates into components.
 
 	This method will return a three element list
-	if the right hand side is an algebraic operation
+	if the right hand side is an algebraic operation.
+
 	It will return an emtpy list otherwise.
 
 	"""
