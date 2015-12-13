@@ -501,26 +501,34 @@ class optimizer:
 
 	"""
 
-	self.variable_seperator_list()
+	self.variable_seperator_list(input) takes a 
+	statement and separates into components.
+
+	This method will return a three element list
+	if the right hand side is an algebraic operation
+	It will return an emtpy list otherwise.
 
 	"""
 
 	def variable_seperator_list(self, input):
-		operators = ["+","-", "*", "/", "%", "<<"]
+		operators = ["+","-", "*", "/", "%", "<<"] # includes all the valid operations
+		# separates into components
 		myList = input.split(" ")
-		opration = False
 
+		# if it is an algebraic operation, return a list with 
+		# operation symbol, variable 1, variable 2 in order
 		for char in myList:
 			if char in operators:
 				var1 = myList[myList.index(char) - 1]
 				var2 = myList[myList.index(char) + 1]
-				opration = True
 				return [char, var1, var2]
+		# otherwise, empty list will be returned
 		return []
 
 	"""
 
-	self.check_two_exp()
+	self.check_two_exp(num) checks whether a number
+	is a exponitial of 2
 
 	"""
 
