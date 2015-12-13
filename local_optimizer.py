@@ -3,32 +3,78 @@ import string
 import math
 import tree
 
-class compiler:
+"""
+
+optimizer(filename) class will create a 
+local optimizer given the name of a file 
+lives under directory "./test/". The file 
+will first be transformed into single 
+assignment form, and perform a series of
+optimizations until the file cannot be 
+further optimized. The series of 
+optimization techniques, namely, are 
+common subexpression elimination, copy 
+propagation, constant folding, algebraic 
+simplification and dead code elimination,
+in order.
+
+"""
+
+class optimizer:
+
+	"""
+
+	The initialing phase of the optimizer reads 
+	the input file, get rid of semicolons and blank
+	lines, and perform single-assignment-
+	transformation. Meanwhile, the optimizer finds
+	the root of the syntax tree for optimization 
+	uses. Then, the optimizer go through optimization 
+	phase and write to a file in the directory 
+	"./optimize/".
+
+	"""
 	
-	def __init__ (self, c_file, debug = False):
+	def __init__ (self, c_file, debug = False): # in debug mode, optimizer will print() for debugging uses
 
-		# used for constant folding, feel free to move
+		# used for constant folding
 		self.ops = {"+": (lambda x,y: x+y), "-": (lambda x,y: x-y), "*": (lambda x,y: x*y), "/": (lambda x,y: x/y), "%": (lambda x,y: x%y), "<": (lambda x,y: x*(2**y)), ">": (lambda x,y: x*(2**(y*-1))) }
-		self.verbose = debug
+		self.verbose = debug # indication of debug mode
 
+		# starts reading from raw file
 		self.file_name = c_file
 		rfile = open("./test/" + self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
+		# end reading and get the raw file
 
+		# transfroms the string buffer to a list by spliting on new line charactor
 		self.code_array = self.filter(self.code_orig.split("\n"))
-		self.semicolonProcessing()
+		self.semicolonProcessing() # takes away semicolons
 		
-		self.single_assignment()
-		self.findRoot()
+		self.single_assignment() # performs single-assignment transformation
+		self.findRoot() # finds the syntax root and build a tree upon that
 
-		self.optimize()
-		self.write()
+		self.optimize() # performs recursive optimization until the file cannot be further optimized 
+		self.write() # write back to the according file in "./test/optimize/"
+
+	"""
+
+	self.semicolonProcessing() get rid of semicolons 
+	by poping the last charactor in code array
+
+	"""
 
 	def semicolonProcessing(self):
 		for statement in self.code_array:
 			self.code_array[self.code_array.index(statement)] = statement[:-1]
-		
+	
+	"""
+
+	???
+
+	"""
+
 	def filter(self, array):
 		offset = 0
 		for i in range(len(array)):
@@ -36,6 +82,24 @@ class compiler:
 				del array[i+offset]
 				offset-= 1
 		return array
+
+	"""
+
+	self.optimize() performs common subexpression 
+	elimination, copy propagation, constant folding, 
+	algebraic simplification and dead code 
+	elimination, in order.
+
+	At the beginning of each iteration of optimize(),
+	preList will make a copy of the current code
+	array for later compare uses. 
+
+	At the end of the optimize(), if preList is the 
+	same as the code array after optimization, 
+	optimization is considered done. Otherwise, 
+	it will call self.optimize again.	
+
+	"""
 
 	def optimize(self):
 		preList = self.code_array[:]
@@ -68,6 +132,12 @@ class compiler:
 			self.optimize()
 		else: return
 
+	"""
+
+	???
+
+	"""
+
 	def write(self):
 		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
 		for l in self.code_array:
@@ -75,8 +145,42 @@ class compiler:
 			wfile.write("\n")
 		wfile.close()
 
+	"""
+
+	self.findRoot() get the root of syntax tree.
+	We assumed that the code block return the variable 
+	in the left hand side of the final statement.
+
+	"""
+
 	def findRoot(self):
 		self.root = tree.Tree(self.code_array[-1][0])
+
+	"""
+
+	self.populate(root) get a root of tree and build 
+	the tree based on its dependency. The dependency
+	between nodes can be referred from self.lib, which
+	includes pairs of keys and values, with variable 
+	name as key and right hand side of the statment 
+	as value. Since we are populate on a single 
+	assignment form, each key has only one value.
+
+	For example, code block shown as following:
+
+	a = b + c
+	d = e
+	f = a * d
+
+	will generate a tree like this:
+
+				f
+			//  	\\
+			d 		 a
+		  // \\	   // \\
+	   None   e	   b   c
+
+	"""
 
 	def populate(self, root):
 		if root.data in self.lib:
@@ -86,61 +190,158 @@ class compiler:
 			self.populate(root.right)
 		else: return
 
+	"""
+
+	self.create_lib() create a library in the
+	form that has pairs of keys and values that
+	takes variable as keys and its right hand
+	side as values.
+
+	"""
+
 	def create_lib(self):
 		self.lib = {}
 		for statement in self.code_array:
 			self.lib[statement[0]] = statement
 
+	"""
+	self.single_assignment() change a raw code array
+	to the form of single assignment, which means 
+	any variable in the code should only be assigned 
+	once. 
+
+	If double assingment were found in the code, 
+	all the previous place which holds the double 
+	assigned variable will be replace with a new
+	variable name, including the right hand side of 
+	the second assignment.
+
+	"""
+
 	def single_assignment(self):
-		hashtable = {}
+		hashtable = {} # a hashtable is created to record already appeared variables
+
+		# a list of all the possible variabels
 		variable = list(string.ascii_lowercase)
 		variable_index = 25
+
+		# loops through the code array
 		for statement in self.code_array:
 			if statement is not "":
+				# records newly appeared variable names
 				if statement[0] not in hashtable:
 					hashtable[statement[0]] = statement
+				# performs replacing if double assignment were spotted
 				elif not statement == hashtable[statement[0]]:
 					j=0
 					temp = statement[0]
 					l=[]
 
+					# replaces the variable name with the end of possible variable names, starting from 'z',
+					# before and including the current statement	
 					index = self.code_array.index(statement)
 					while j <= index:
 					 	self.code_array[j] = self.code_array[j].replace(statement[0], variable[variable_index])
 					 	j += 1
 
+					# move the index forward
 					variable_index = variable_index-1
+					# change the variable name back on the current assignment
 					self.code_array[index] = temp + self.code_array[index][1:]
+				# handle the dubious assignment cases
 				else:
 					self.removeSecond(statement)
+
+	"""
+
+	self.removeSecond(statement) handle the case that
+	dubious statment is appeared in the code. In this
+	case, we cannot handle it as a simple double 
+	assignment. We need to delete all dubious after
+	the first statement.
+
+	"""
+
 
 	def removeSecond(self, statement):
 		delete = False
 		for i in range(len(self.code_array)):
 			if self.code_array[i] == statement:
+				# delete flag ignores the first and delete all the follower
 				if delete:
 					self.code_array.pop(i)
 					break
 				else:
 					delete = True
 
+	"""
+
+	self.common_subexpression_elimination() optimizes
+	by handling the statements with same right hand sides.
+
+	For example:
+
+	a = b + c
+	d = b + c 
+
+	will be changed to:
+
+	a = b + c 
+	d = a
+
+	"""
+
+
 	def common_subexpression_elimination(self):
-		rhsList = []
+		rhsList = [] # records all the right hand side as looping throughout the code array
 		for statement in self.code_array:
-			rhs = statement[statement.index('=') + 1:]
+			rhs = statement[statement.index('=') + 1:] # get right hand side of a statement
+			# perform replacement if dubious right hand side were found
 			if rhs in rhsList:
 				self.replace_rhs(rhsList.index(rhs), self.code_array.index(statement), self.code_array[rhsList.index(rhs)].index("="), statement.index("="), self.code_array)
+			# rhsList will still record the dubious right hand side to make index correct
 			rhsList.append(rhs)
 
 
+	"""
+
+	self.copy_propagation() optimizes by handling 
+	the case of single variable right hand side 
+	statment, and propagate right hand side of 
+	the statement to the following of code where
+	left hand side variable is used.
+
+	For example:
+
+	a = 3
+	c = a + b 
+
+	will be changed to:
+
+	a = 3
+	c = 3 + b
+
+	"""
+
 	def copy_propagation(self):
 		for statement in self.code_array:
-			myList = statement.split(" ")
-			lhs = statement[:statement.index('=')]
-			rhs = statement[statement.index('=') + 1:]
+			myList = statement.split(" ") # split the statement into components
+			lhs = statement[:statement.index('=')] # get left hand side
+			rhs = statement[statement.index('=') + 1:] # get right hand side
+			# if the statememnt is of the form "a = b", perform copy propagation 
+			# on all the statements after the current one
 			if len(myList) == 3:
 				temp = lhs[0]
-				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(self.code_array[self.code_array.index(statement) + 1:], temp, rhs[1:])
+				self.code_array[self.code_array.index(statement) + 1:] = self.search_and_replace(
+					self.code_array[self.code_array.index(statement) + 1:],
+					temp, rhs[1:])
+
+	"""
+
+	???
+
+	"""
+
 
 	def constant_fold(self):
 		outputs = []
@@ -162,6 +363,12 @@ class compiler:
 			outputs.append(out)
 		self.code_array = outputs
 
+	"""
+
+	self.isnum(n) checks whether the input string is a valid number
+
+	"""
+
 	def isnum(self, n):
 		if n.isdigit():
 			return True
@@ -171,12 +378,33 @@ class compiler:
 		except ValueError:
 			return False
 
+	"""
+
+	self.algebraic_simplification() optimizes by replacing 
+	expansive opration with simpler ones, or even removing.
+
+	For example:
+
+	a = b + 0 -> a = b
+	a = b * 1 -> a = b
+	a = b * 64 -> a = b << 6
+
+	"""
+
 
 	def algebraic_simplification(self):
 		for statement in self.code_array:
-			var = self.variable_seperator_list(statement)
+			var = self.variable_seperator_list(statement) # get the right hand side components in list 'var'
+			# if the right hand side contains algebraic operation, performs operation
 			if (len(var) == 3): 
 				self.code_array[self.code_array.index(statement)] = statement[:3] + self.operation_simplification(var)
+
+
+	"""
+
+	self.operation_simplification(var) 
+
+	"""
 
 	def operation_simplification(self, var):
 		rhs = ""
@@ -216,6 +444,12 @@ class compiler:
 		if other:
 			rhs = " " + var[1] + " " + var[0] + " " + var[2]
 		return rhs
+
+	"""
+
+	self.dead_code_elimination
+
+	"""
 
 	def dead_code_elimination(self):
 		self.create_lib()
@@ -284,7 +518,7 @@ def test():
 	# should be 66.6
 	tests =  ["AStest.txt", "CPtest.txt", "CSEtest.txt", "DCEtest.txt", "DiffOfFourth.txt", "Heron.txt", "LawOfCosines.txt", "MultiplyAndDivide.txt", "SAFtest.txt", "ThreeSquares.txt" ]#["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
 	for test in tests:
-		c = compiler(test)
+		c = optimizer(test)
 		testName = test.split(".")[0]
 		
 		if c.test():
@@ -292,11 +526,11 @@ def test():
 		else: 
 			print testName  + " Failed"
 
-	# c = compiler("test_algebraic_simplification.txt")
+	# c = optimizer("test_algebraic_simplification.txt")
 
 
 def main():
-	c = compiler("ThreeSquares.txt")
+	c = optimizer("ThreeSquares.txt")
 
 
 if __name__ == "__main__":
