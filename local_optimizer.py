@@ -447,7 +447,7 @@ class optimizer:
 
 	"""
 
-	self.dead_code_elimination
+	self.dead_code_elimination()
 
 	"""
 
@@ -457,13 +457,31 @@ class optimizer:
 		for statement in self.code_array:
 			if not self.root.findLeave(statement[0]): self.code_array.remove(statement)
 
+	"""
+
+	self.search_and_replace()
+
+	"""
+
 	def search_and_replace(self, myList, old, new):
 		for statement in myList:
 			myList[myList.index(statement)] = statement.replace(old, new)
 		return myList
 
+	"""
+
+	self.replace_rhs()
+
+	"""
+
 	def replace_rhs(self, indexList1, indexList2, indexString1, indexString2, myList):
 		myList[indexList2] = myList[indexList2][:indexString2 + 2] + myList[indexList1][:indexString1 - 1]
+
+	"""
+
+	self.variable_seperator_tuple()
+
+	"""
 
 	def variable_seperator_tuple(self, input):
 		operator = ["+","-", "*", "/", "%", "<<"]
@@ -481,6 +499,12 @@ class optimizer:
 		else:
 			return myList[myList.index("=") + 1], None
 
+	"""
+
+	self.variable_seperator_list()
+
+	"""
+
 	def variable_seperator_list(self, input):
 		operators = ["+","-", "*", "/", "%", "<<"]
 		myList = input.split(" ")
@@ -494,9 +518,21 @@ class optimizer:
 				return [char, var1, var2]
 		return []
 
+	"""
+
+	self.check_two_exp()
+
+	"""
+
 	def check_two_exp(self, num):
 		num = int(num)
 		return ((num & (num - 1)) == 0) and num != 0
+
+	"""
+
+	???
+
+	"""
 
 	def test(self):
 
@@ -512,6 +548,12 @@ class optimizer:
 			return True
 		return False
 
+
+"""
+
+???
+
+"""
 
 def test():
 
