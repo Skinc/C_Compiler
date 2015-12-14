@@ -1,0 +1,11 @@
+a = i
+b = j
+c = k
+a = i * j
+a = a / k
+a = a * j
+a = a / k
+a = a * j
+a = a / k
+a = a * j
+a = a / k
