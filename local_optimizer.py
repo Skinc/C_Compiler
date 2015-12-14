@@ -590,6 +590,7 @@ class optimizer:
 		genfile = open("./optimize/"+self.file_name.split(".")[0] + "_optimized.c", "r")
 		generated_code = genfile.read().replace(" ", "").replace("\n", "")
 		genfile.close()
+
 		expfile = open("./expected/"+self.file_name.split(".")[0] + "_expected.c", "r")
 		expected_code = expfile.read().replace(" ", "").replace("\n", "")
 		expfile.close()
@@ -609,6 +610,8 @@ class optimizer:
 def test():
 
 	# should be 66.6
+	failed = 0
+	passed = 0
 	tests =  ["AStest.txt", "CPtest.txt", "CSEtest.txt", "DCEtest.txt", "DiffOfFourth.txt", "Heron.txt", "LawOfCosines.txt", "MultiplyAndDivide.txt", "SAFtest.txt", "ThreeSquares.txt" ]#["test_single_assignment.txt" , "test_constant_folding.txt", "test_algebraic_simplification.txt", "test_single_assignment.txt" ]
 	for test in tests:
 		c = optimizer(test)
@@ -616,14 +619,24 @@ def test():
 		
 		if c.test():
 			print testName + " Passed"
+			passed += 1
 		else: 
 			print testName  + " Failed"
+			failed += 1
+
+	print str(passed) + " tests passed."
+	print str(failed) + " tests failed."
 
 	# c = optimizer("test_algebraic_simplification.txt")
 
 
 def main():
+# <<<<<<< Updated upstream
 	c = optimizer("ThreeSquares.txt")
+# =======
+	test()
+	# c = compiler("ThreeSquares.txt")
+# >>>>>>> Stashed changes
 
 
 if __name__ == "__main__":
