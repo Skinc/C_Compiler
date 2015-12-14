@@ -44,7 +44,7 @@ class optimizer:
 
 		# starts reading from raw file
 		self.file_name = c_file
-		rfile = open("./test/" + self.file_name, "r")
+		rfile = open("./rawcode/" + self.file_name, "r")
 		self.code_orig = rfile.read()
 		rfile.close()
 		# end reading and get the raw file
