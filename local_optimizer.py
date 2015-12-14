@@ -144,9 +144,17 @@ class optimizer:
 
 	def write(self):
 		wfile = open(  "./optimize/%s_optimized.c" % ( self.file_name.split(".")[0]), "w")
+		wrapper_before = open("wrapper_open.txt", 'r')
+		wfile.write(wrapper_before.read())
+		wrapper_before.close()
+
 		for l in self.code_array:
-			wfile.write(l + ";") #write each line of the code_array and and a ;
-			wfile.write("\n") #write a new line
+			wfile.write("	" + l + ";") #write each line of the code_array and and a ;
+			wfile.write("\n ") #write a new line
+		wfile.write( "	return " + self.root.data + ";\n")
+		wrapper_after = open("wrapper_close.txt", 'r')
+		wfile.write(wrapper_after.read())
+		wrapper_after.close()
 		wfile.close() #close the file
 
 	"""
