@@ -681,7 +681,7 @@ def testCompilers():
 	
 
 def main():
-	c = optimizer("ThreeSquares.txt")
+	c = optimizer("MultiplyAndDivide.txt")
 	testCompilers()
 
 

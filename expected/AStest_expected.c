@@ -1,8 +1,8 @@
 #include <time.h>
 #include <stdio.h>
 
-#define loopCount 1000
-#define testCount 10
+#define loopCount 10000
+#define testCount 10000
 
 int wrapper_function() {
 	int a, b, c, d, e, f, g, h, i, j, k, l, 

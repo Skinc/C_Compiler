@@ -1,23 +1,23 @@
 #include <time.h>
 #include <stdio.h>
 
-#define loopCount 1000
-#define testCount 10
+#define loopCount 10000
+#define testCount 10000
 
 int wrapper_function() {
 	int a, b, c, d, e, f, g, h, i, j, k, l, 
 		m, n, o, p, q, r, s, t, u, v, w, x, y, z;
 
-	i = 5;
-	j = 4;
-	k = 8;
+a = i;
+b = j;
+c = k;
 
-	a = i * i;
-	b = j * j;
-	c = k * k;
-	d = a + b;
-	e = d + c;
+a = a * a;
+b = b * b;
+c = c * c;
 
+d = a + b;
+e = d + c;
 	return e;
 }
 
@@ -40,7 +40,7 @@ int main () {
 	  	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   		times = times + time_spent;
   	}
-  	printf("Average time spent: %f\n", times/testCount );
+  	printf("Average time spent: %f\n", times/testCount);
   		
 	return result;
 }
